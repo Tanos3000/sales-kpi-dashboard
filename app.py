@@ -4,6 +4,7 @@ Turns the sales-performance-analysis project's static notebook analysis into
 an interactive dashboard. Run with: streamlit run app.py
 """
 
+import plotly.express as px
 import streamlit as st
 
 from data_prep import load_clean_sales
@@ -76,6 +77,50 @@ col4.metric("Avg. Order Value", f"£{avg_order_value:,.2f}")
 col5.metric("Units Sold", f"{total_units:,}")
 
 st.caption(f"Showing {len(filtered):,} of {len(sales):,} line items based on the filters above.")
+
+st.divider()
+
+# --- Charts ---
+chart_col1, chart_col2 = st.columns(2)
+
+with chart_col1:
+    st.subheader("Revenue over time")
+    # Daily aggregation reads as noise once the filtered range gets long, so
+    # switch to weekly totals once the range spans more than ~60 days.
+    span_days = (end_date - start_date).days
+    freq = "D" if span_days <= 60 else "W"
+    trend = (
+        filtered.set_index("InvoiceDate")["Revenue"]
+        .resample(freq)
+        .sum()
+        .reset_index()
+    )
+    fig_trend = px.line(trend, x="InvoiceDate", y="Revenue", labels={"InvoiceDate": "Date", "Revenue": "Revenue (£)"})
+    st.plotly_chart(fig_trend, use_container_width=True)
+
+with chart_col2:
+    st.subheader("Top 10 products by revenue")
+    top10 = (
+        filtered[filtered["IsProduct"]]
+        .groupby("Description")["Revenue"]
+        .sum()
+        .sort_values(ascending=False)
+        .head(10)
+        .sort_values()
+    )
+    fig_products = px.bar(
+        top10, x=top10.values, y=top10.index, orientation="h",
+        labels={"x": "Revenue (£)", "y": ""},
+    )
+    st.plotly_chart(fig_products, use_container_width=True)
+
+st.subheader("Revenue by country")
+country_revenue = filtered.groupby("Country")["Revenue"].sum().sort_values(ascending=False).head(15)
+fig_country = px.bar(
+    country_revenue, x=country_revenue.index, y=country_revenue.values,
+    labels={"x": "Country", "y": "Revenue (£)"},
+)
+st.plotly_chart(fig_country, use_container_width=True)
 
 st.divider()
 st.caption(
