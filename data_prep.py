@@ -12,6 +12,12 @@ import pandas as pd
 
 DATA_PATH = Path(__file__).parent / "data" / "online_retail.xlsx"
 
+# Postage charges and manual account adjustments - real revenue, but not
+# actual merchandise. Kept in KPI totals (customers really paid this money),
+# but excluded from the product filter/breakdown so "top product" never
+# means "shipping fee" (same distinction made in sales-performance-analysis).
+NON_PRODUCT_CODES = ["POST", "DOT", "M", "m"]
+
 
 def load_clean_sales(path: Path = DATA_PATH) -> pd.DataFrame:
     df = pd.read_excel(path)
@@ -31,5 +37,6 @@ def load_clean_sales(path: Path = DATA_PATH) -> pd.DataFrame:
 
     sales["Revenue"] = sales["Quantity"] * sales["UnitPrice"]
     sales["InvoiceDate"] = pd.to_datetime(sales["InvoiceDate"])
+    sales["IsProduct"] = ~sales["StockCode"].isin(NON_PRODUCT_CODES)
 
     return sales
