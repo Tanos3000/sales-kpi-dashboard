@@ -7,13 +7,21 @@ an interactive dashboard. Run with: streamlit run app.py
 import plotly.express as px
 import streamlit as st
 
-from data_prep import load_clean_sales
+import download_data
+from data_prep import DATA_PATH, load_clean_sales
 
 st.set_page_config(page_title="Sales KPI Dashboard", page_icon="\U0001F4CA", layout="wide")
 
 
 @st.cache_data
 def get_data():
+    # On a fresh deployment (e.g. Streamlit Community Cloud) the raw Excel
+    # file isn't in the repo (see .gitignore) and download_data.py was never
+    # run manually - so the app downloads it itself on first load instead of
+    # crashing with a FileNotFoundError.
+    if not DATA_PATH.exists():
+        with st.spinner("Downloading dataset (first run only)..."):
+            download_data.main()
     return load_clean_sales()
 
 
