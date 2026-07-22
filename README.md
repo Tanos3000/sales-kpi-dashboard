@@ -6,6 +6,8 @@ An interactive Streamlit dashboard for UK online retail sales data — filter by
 
 ![Revenue over time](assets/chart_revenue_trend.png)
 
+Second of a three-part series on the same dataset: [static exploratory analysis](https://github.com/Tanos3000/sales-performance-analysis) → interactive dashboard (this repo) → [natural-language query agent](https://github.com/Tanos3000/ai-data-analysis-agent).
+
 ## Problem / Motivation
 
 The [sales-performance-analysis](https://github.com/Tanos3000/sales-performance-analysis) project answered fixed business questions in a static notebook. But stakeholders rarely want just one predefined view — they want to slice the data themselves ("show me just Germany", "what did November look like?"). This dashboard turns that same dataset into something a non-technical person can explore on their own, live.
