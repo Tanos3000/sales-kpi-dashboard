@@ -1,5 +1,7 @@
 # Sales KPI Dashboard
 
+**Live demo:** <!-- TODO(Lennard): Link nach Streamlit-Community-Cloud-Deployment hier eintragen --> _(not yet deployed)_
+
 An interactive Streamlit dashboard for UK online retail sales data — filter by date, country, or product and watch 5 KPI cards and 3 charts update live.
 
 ![Revenue over time](assets/chart_revenue_trend.png)
@@ -46,6 +48,15 @@ pip install -r requirements.txt
 
 streamlit run app.py    # downloads the dataset automatically on first run
 ```
+
+### Deploying to Streamlit Community Cloud
+
+The app is already deployment-ready: no absolute paths, and `download_data.py` fetches the dataset on first run so there's no manual data setup step.
+
+1. Push this repo to GitHub (already done).
+2. Go to [share.streamlit.io](https://share.streamlit.io) → **New app**.
+3. Select this repository, branch `main`, main file path `app.py`.
+4. Deploy. First load takes a bit longer while the dataset downloads.
 
 ## Data Source
 
